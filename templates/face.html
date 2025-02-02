@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="content-section">
+        <h2>Face Recognition</h2>
+        <p>Press 'Start Camera' to begin face recognition. Press 'q' key in the camera window to stop.</p>
+        <button class="start-btn" onclick="startRecognition()">Start Camera</button>
+        <p id="result">Waiting...</p>
+        <div id="screenshot-container" style="display: none; margin-top: 20px;">
+            <h3 id="recognized-name"></h3>
+            <img id="captured-image" src="" alt="Captured face" style="max-width: 100%; border-radius: 5px;">
+            <h3><b>Relation: Family Friend</b></h3>
+        </div>
+    </div>
+
+    <style>
+        .content-section {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 20px;
+            background-color: #f7f7f7;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .start-btn {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .start-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .start-btn:hover:not(:disabled) {
+            background-color: #0056b3;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #555;
+        }
+    </style>
+
+    <script>
+        function startRecognition() {
+            document.getElementById("result").textContent = "Starting face recognition...";
+            document.querySelector('.start-btn').disabled = true;
+            
+            fetch('/start_face_recognition')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById("result").textContent = "Face recognition complete!";
+                        document.getElementById("recognized-name").textContent = "Recognized: " + data.name;
+                        document.getElementById("captured-image").src = "/" + data.screenshot;
+                        document.getElementById("screenshot-container").style.display = "block";
+                    } else {
+                        document.getElementById("result").textContent = "Error: " + (data.error || "Unknown error");
+                        document.querySelector('.start-btn').disabled = false;
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    document.getElementById("result").textContent = "Error starting face recognition";
+                    document.querySelector('.start-btn').disabled = false;
+                });
+        }
+    </script>
+{% endblock %}

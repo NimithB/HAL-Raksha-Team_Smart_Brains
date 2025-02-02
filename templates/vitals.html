@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <h1>Health Vitals Dashboard</h1>
+    <div class="vitals-grid">
+        <div class="vital-card">
+            <h3>Heart Rate</h3>
+            <div class="vital-value" id="heart-rate">{{ vitals.heart_rate }}</div>
+            <div class="vital-unit">BPM</div>
+        </div>
+        <div class="vital-card">
+            <h3>Blood Pressure</h3>
+            <div class="vital-value" id="blood-pressure">{{ vitals.blood_pressure }}</div>
+            <div class="vital-unit">mmHg</div>
+        </div>
+        <div class="vital-card">
+            <h3>Temperature</h3>
+            <div class="vital-value" id="temperature">{{ vitals.temperature }}</div>
+            <div class="vital-unit">°C</div>
+        </div>
+        <div class="vital-card">
+            <h3>Oxygen Level</h3>
+            <div class="vital-value" id="oxygen-level">{{ vitals.oxygen_level }}</div>
+            <div class="vital-unit">%</div>
+        </div>
+    </div>
+</div>
+
+<script>
+function updateVitals() {
+    fetch('/get_vitals')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('heart-rate').textContent = data.heart_rate;
+            document.getElementById('blood-pressure').textContent = data.blood_pressure;
+            document.getElementById('temperature').textContent = data.temperature;
+            document.getElementById('oxygen-level').textContent = data.oxygen_level;
+        });
+}
+
+setInterval(updateVitals, 5000);
+</script>
+{% endblock %}

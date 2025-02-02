@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <h1>Welcome to Raksha</h1>
+    <p>Your personal health monitoring assistant</p>
+</div>
+
+<div class="card">
+    <h2>Quick Actions</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+        <a href="{{ url_for('vitals') }}" class="button">Check Vitals</a>
+        <a href="{{ url_for('sos') }}" class="button">SOS</a>
+        <a href="{{ url_for('show_reminders') }}" class="button">Reminders</a>
+        <a href="{{ url_for('chatbot') }}" class="button">Chat Assistant</a>
+        <a href="{{ url_for('face_recognition_page') }}" class="button">Face Recognition</a>
+    </div>
+</div>
+
+<div class="card" style="background-color: #f0e5d8; padding: 20px; border-radius: 10px;">
+    <h2 style="font-size: 24px;">Daily Tasks</h2>
+    <div id="task-list">
+        <div class="task-item"><span>Start Your Day with a Positive Affirmation</span><button id="affirmation" class="task-button" onclick="completeTask('affirmation')">Done</button></div>
+        <div class="task-item"><span>Practice Breathing or Pranayama</span><button id="breathing" class="task-button" onclick="completeTask('breathing')">Done</button></div>
+        <div class="task-item"><span>Do Some Light Exercise or Yoga</span><button id="exercise" class="task-button" onclick="completeTask('exercise')">Done</button></div>
+        <div class="task-item"><span>Take Your Morning Medicine</span><button id="morning-medicine" class="task-button" onclick="completeTask('morning-medicine')">Done</button></div>
+        <div class="task-item"><span>Take Your Afternoon Medicine</span><button id="afternoon-medicine" class="task-button" onclick="completeTask('afternoon-medicine')">Done</button></div>
+        <div class="task-item"><span>Take Your Evening Medicine</span><button id="evening-medicine" class="task-button" onclick="completeTask('evening-medicine')">Done</button></div>
+        <div class="task-item"><span>Engage in Socializing</span><button id="socializing" class="task-button" onclick="completeTask('socializing')">Done</button></div>
+        <div class="task-item"><span>Drink Water</span><button id="drink-water" class="task-button" onclick="completeTask('drink-water')">Done</button></div>
+        <div class="task-item"><span>Reflect on Your Day with Gratitude</span><button id="gratitude" class="task-button" onclick="completeTask('gratitude')">Done</button></div>
+        <div class="task-item"><span>Spend Time Outside</span><button id="going outside" class="task-button" onclick="completeTask('going outside')">Done</button></div>
+    </div>
+
+    <div id="progress-bar" style="width: 100%; background-color: #e0e0e0; border-radius: 5px; margin-top: 10px;">
+        <div id="progress" style="width: 0%; height: 20px; background: linear-gradient(to right, lightblue, green); border-radius: 5px;"></div>
+    </div>
+    <div id="level-info" style="margin-top: 10px; font-size: 20px; font-weight: bold;"></div>
+    <div id="message" style="margin-top: 10px; font-size: 18px;"></div>
+    <button class="next-day-button" onclick="nextDay()">Next Day</button>
+</div>
+
+<script>
+    let progress = 0;
+    let xp = parseInt(localStorage.getItem('xp')) || 0;
+    let level = parseInt(localStorage.getItem('level')) || 1;
+    const xpPerTask = 10;
+    const maxXp = 100;
+    const totalTasks = 11;  
+    let tasksCompleted = JSON.parse(localStorage.getItem('tasksCompleted')) || [];
+
+    function updateProgress() {
+        document.getElementById('progress').style.width = progress + '%';
+        document.getElementById('level-info').innerText = `Level: ${level} | XP: ${xp}%`;
+    }
+
+    function completeTask(task) {
+        if (!tasksCompleted.includes(task)) {
+            tasksCompleted.push(task);
+            xp += xpPerTask;
+            progress = (xp / maxXp) * 100;
+
+            // Disable and grey out button
+            const taskButton = document.getElementById(task);
+            if (taskButton) {
+                taskButton.disabled = true;
+                taskButton.style.backgroundColor = "grey";
+                taskButton.style.cursor = "not-allowed";
+            }
+
+            document.getElementById('message').innerText = 'Great job! You completed: ' + task;
+            localStorage.setItem('tasksCompleted', JSON.stringify(tasksCompleted));
+            localStorage.setItem('xp', xp);
+            localStorage.setItem('progress', progress);
+
+            if (xp >= maxXp) {
+                levelUp();
+            }
+        } else {
+            document.getElementById('message').innerText = 'Task already completed today.';
+        }
+        updateProgress();
+    }
+
+    function levelUp() {
+        level++;
+        xp = 0; // Reset XP after leveling up
+        progress = 0;
+        document.getElementById('message').innerText = `🎉 Level Up! You are now Level ${level}! 🎉`;
+        localStorage.setItem('level', level);
+        localStorage.setItem('xp', xp);
+        localStorage.setItem('progress', progress);
+        updateProgress();
+    }
+
+    function nextDay() {
+        if (xp >= maxXp) {
+            levelUp();  
+        } else {
+            xp = 0;  
+            progress = 0;
+        }
+        tasksCompleted = [];
+        localStorage.setItem('tasksCompleted', JSON.stringify(tasksCompleted));
+        localStorage.setItem('xp', xp);
+        localStorage.setItem('progress', progress);
+
+        document.getElementById('progress').style.width = '0%';
+        document.getElementById('message').innerText = 'A new day begins! XP and tasks reset.';
+
+        // Enable all buttons again
+        document.querySelectorAll('.task-button').forEach(button => {
+            button.disabled = false;
+            button.style.backgroundColor = "#76c7c0";
+            button.style.cursor = "pointer";
+        });
+
+        updateProgress();
+    }
+
+    window.onload = function() {
+        xp = parseInt(localStorage.getItem('xp')) || 0;
+        progress = (xp / maxXp) * 100;
+        tasksCompleted = JSON.parse(localStorage.getItem('tasksCompleted')) || [];
+
+        tasksCompleted.forEach(task => {
+            const button = document.getElementById(task);
+            if (button) {
+                button.disabled = true;
+                button.style.backgroundColor = "grey";
+                button.style.cursor = "not-allowed";
+            }
+        });
+
+        updateProgress();
+    };
+</script>
+
+<style>
+    .task-item { display: flex; justify-content: space-between; margin: 10px 0; }
+    .task-button, .next-day-button { padding: 10px 20px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer; transition: 0.3s; }
+    .task-button { background-color: #76c7c0; color: white; }
+    .task-button:hover { background-color: #5ba8a0; }
+    .next-day-button { background-color: #ff7043; color: white; margin-top: 20px; }
+    .next-day-button:hover { background-color: #e64a19; }
+</style>
+
+{% endblock %}
