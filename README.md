@@ -62,8 +62,9 @@ HAL Raksha is a comprehensive health monitoring and assistance platform tailored
 ---
 ## 🌟 Contributors
 - [Nimith B](https://github.com/NimithB)  
-- Shriram Krishnakumar Pai  
-- [Other Contributors]
+- [Shriram Krishnakumar Pai](https://github.com/shrirampai300)     
+- [Sarthak](https://github.com/sarthak1203)    
+- [Brindha](https://github.com/Brindha715)    
 
 We welcome contributions and feedback to make HAL Raksha even better.
 
@@ -85,14 +86,5 @@ We welcome contributions and feedback to make HAL Raksha even better.
 5. Open a Pull Request.
 
 ---
-## 🛡️ License
-This project is licensed under the MIT License. See the LICENSE file for more details.
-
----
-## 📞 Contact
-For any queries or suggestions, please contact the team at:
-- **Email:** [team.smartbrains@domain.com](mailto:team.smartbrains@domain.com)
-- **GitHub Issues:** [Open an Issue](https://github.com/NimithB/HAL-Raksha-Team_Smart_Brains/issues)
-
 Thank you for supporting HAL Raksha and making elderly care smarter and safer! 🚀
 
