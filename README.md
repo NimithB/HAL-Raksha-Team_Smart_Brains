@@ -12,6 +12,7 @@ HAL Raksha is a comprehensive health monitoring and assistance platform tailored
 - **Reminders:** Medication and task reminders to support daily health routines.
 - **AI Chatbot:** An AI-powered virtual assistant for companionship and queries.
 - **Gamification:** Engaging tasks to promote healthy habits, including daily affirmations, exercises, and social interaction.
+- **Face Recognition:** Authenticate users by scanning their faces using OpenCV-based face detection.
 
 ---
 ## 🎯 Objectives
